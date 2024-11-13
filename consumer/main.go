@@ -1,6 +1,10 @@
 package main
 
-import "github.com/confluentinc/confluent-kafka-go/v2/kafka"
+import (
+	"fmt"
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
+	"time"
+)
 
 // HASIL NAMA YG DI KIRIM OLEH PRODUCER AKAN DI DI ADD KE DB DAN DI BUKANA
 // NIM SECARA OTOMATIS DAN DI PILIHKAN DOSEN WALI SECARA RANDOM
@@ -17,10 +21,18 @@ func main() {
 	}
 	defer consumer.Close()
 
-	// GABUNG KE ...
+	// GABUNG KE TOPIC ...
 	err = consumer.Subscribe("mahasiswa", nil)
 	if err != nil {
 		panic(err)
+	}
+
+	for {
+		// IN HERE GO LISTEN
+		message, err := consumer.ReadMessage(1 * time.Second)
+		if err == nil {
+			fmt.Printf("Recive message : %s", message.Value)
+		}
 	}
 
 }
